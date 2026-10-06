@@ -1,0 +1,4 @@
+# Dependencias y credenciales del backend
+node_modules
+.env
+*.local

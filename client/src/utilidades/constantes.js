@@ -1,0 +1,18 @@
+export const URL_API = import.meta.env.VITE_API_URL ?? '/api/v1'
+
+export const USAR_MOCK_AUTH = import.meta.env.VITE_USAR_MOCK_AUTH === 'true'
+
+export const CLAVE_TOKEN = 'stockdaily.token'
+export const CLAVE_USUARIO = 'stockdaily.usuario'
+
+export const RUTA_SALUD = '/salud'
+export const RUTA_LOGIN = '/auth/login'
+export const RUTA_PERFIL = '/auth/perfil'
+export const RUTA_PRODUCTOS = '/productos'
+export const RUTA_CATEGORIAS = '/categorias'
+export const RUTA_SUCURSALES = '/sucursales'
+export const RUTA_CLIENTES = '/clientes'
+export const RUTA_FACTURAS = '/facturas'
+export const RUTA_INVENTARIO = '/inventario'
+export const RUTA_INVENTARIO_STOCK = '/inventario/stock'
+export const RUTA_INVENTARIO_MOVIMIENTOS = '/inventario/movimientos'

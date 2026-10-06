@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tipografía: grotesca con carácter para display/UI, mono para cifras y datos. */
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Papel y tinta */
+  --color-fondo: oklch(0.972 0.006 200);
+  --color-superficie: oklch(0.995 0.002 200);
+  --color-superficie-2: oklch(0.955 0.009 200);
+  --color-tinta: oklch(0.23 0.024 212);
+  --color-tinta-suave: oklch(0.47 0.02 212);
+  --color-borde: oklch(0.905 0.008 200);
+  --color-borde-fuerte: oklch(0.79 0.012 200);
+
+  /* Marca: petróleo */
+  --color-marca: oklch(0.5 0.082 196);
+  --color-marca-fuerte: oklch(0.42 0.076 196);
+  --color-marca-suave: oklch(0.95 0.02 196);
+
+  --color-petroleo: oklch(0.31 0.05 205);
+  --color-petroleo-fuerte: oklch(0.235 0.042 205);
+  --color-petroleo-suave: oklch(0.4 0.056 200);
+
+  /* Acento cálido: ámbar de etiqueta */
+  --color-acento: oklch(0.79 0.13 78);
+  --color-acento-fuerte: oklch(0.56 0.12 62);
+  --color-acento-suave: oklch(0.95 0.045 85);
+
+  /* Estados */
+  --color-aviso: oklch(0.8 0.13 82);
+  --color-error: oklch(0.55 0.19 27);
+  --color-error-fuerte: oklch(0.46 0.18 27);
+  --color-error-suave: oklch(0.96 0.03 25);
+  --color-exito: oklch(0.52 0.11 160);
+  --color-exito-fuerte: oklch(0.43 0.1 160);
+  --color-exito-suave: oklch(0.95 0.03 160);
+
+  /* Profundidad "impresa": offset sólido, sin difuminado gris */
+  --shadow-impresa: 3px 3px 0 0 var(--color-borde-fuerte);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background-color: var(--color-fondo);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-acento-suave);
+    color: var(--color-tinta);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-marca);
+    outline-offset: 2px;
+  }
+}
+
+/* Costura perforada estilo tique: se tiñe con currentColor. */
+@utility seam-y {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    currentColor 0 6px,
+    transparent 6px 13px
+  );
+}
+
+@utility seam-x {
+  background-image: repeating-linear-gradient(
+    to right,
+    currentColor 0 6px,
+    transparent 6px 13px
+  );
+}
+
+/* Grano sutil de papel, se aplica como capa con opacidad y blend. */
+@utility grano {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23r)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 140px 140px;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.anim-aparecer {
+  animation: aparecer 0.55s cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
