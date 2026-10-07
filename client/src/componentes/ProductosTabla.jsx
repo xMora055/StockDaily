@@ -1,5 +1,6 @@
 import Boton from './Boton'
 import Paginacion from './Paginacion'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { formatearMoneda } from '../utilidades/formatoMoneda'
 
 const claseEstado = (activo) =>
@@ -27,6 +28,8 @@ const ProductosTabla = ({
   alSiguiente,
   alCambiarPorPagina,
 }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const renderAcciones = (producto) => {
     const ocupado = idAlternando === producto.id
     const confirmando = confirmandoId === producto.id
@@ -185,7 +188,7 @@ const ProductosTabla = ({
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-right font-mono tabular-nums sm:px-4">
-                    {formatearMoneda(producto.precio_unitario)}
+                    {formatearMoneda(producto.precio_unitario, moneda)}
                   </td>
                   <td className="hidden whitespace-nowrap px-3 py-3 text-right font-mono tabular-nums text-tinta-suave sm:px-4 xl:table-cell">
                     {`${producto.impuesto_porcentaje}%`}
@@ -238,7 +241,7 @@ const ProductosTabla = ({
               <div>
                 <dt className="font-mono text-xs text-tinta-suave">Precio</dt>
                 <dd className="mt-0.5 font-mono tabular-nums">
-                  {formatearMoneda(producto.precio_unitario)}
+                  {formatearMoneda(producto.precio_unitario, moneda)}
                 </dd>
               </div>
               <div>

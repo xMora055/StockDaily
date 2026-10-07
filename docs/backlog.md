@@ -1,4 +1,4 @@
-# Backlog de StockDaily
+﻿# Backlog de StockDaily
 
 Fuente de verdad del backlog. Mantenido por `product-owner`.
 
@@ -13,7 +13,7 @@ Fuente de verdad del backlog. Mantenido por `product-owner`.
 ## MVP (camino crítico al POS con inventario)
 
 | ID | Título | Prioridad | Estado | Capas | Depende de |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | SD-001 | Gestión de sucursales | P0 | Hecho | /server, /client, BD | auth (Hecho) |
 | SD-002 | Catálogo de categorías | P0 | Backlog | /server, /client, BD | SD-001 (opcional) |
 | SD-003 | Catálogo de productos | P0 | Hecho | /server, /client, BD | SD-001, SD-002 |
@@ -25,12 +25,15 @@ Fuente de verdad del backlog. Mantenido por `product-owner`.
 ## Siguiente nivel
 
 | ID | Título | Prioridad | Estado | Capas | Depende de |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | SD-008 | Catálogo de métodos de pago | P1 | Backlog | /server, /client, BD | SD-001 |
 | SD-009 | Listado y consulta de facturas | P1 | En progreso | /server, /client | SD-006 |
-| SD-010 | Onboarding superadmin: empresas y administradores | P1 | Backlog | /server, /client, BD | auth (Hecho) |
+| SD-020 | UX del dashboard: controlar extensión vertical de cards/gráficos | P1 | Hecho | /client | SD-014 |
+| SD-010 | Onboarding superadmin: empresas y administradores | P1 | Hecho | /server, /client, BD | auth (Hecho) |
 | SD-011 | Consulta de stock y faltantes (vista vista_stock_faltante) | P1 | Hecho | /server, /client, BD | SD-005 |
 | SD-012 | Runner de pruebas real (node --test) y scripts test | P1 | Hecho | /server, tests | - |
+| SD-021 | Moneda por empresa: formato y símbolo según empresa.moneda | P1 | Hecho | /server, /client | SD-010, auth |
+| SD-022 | Bugfix: etiqueta de moneda en formulario de productos | P1 | Hecho | /client | SD-021 |
 | SD-013 | Login multi-tenant (resolver 409 por correo repetido) | P1 | Backlog | /server, /client | SD-010 |
 | SD-017 | Endurecimiento de validación de productos (id bigint, coerción estricta) | P1 | Backlog | /server | SD-003 (Hecho) |
 | SD-018 | Paginación de listados existentes (productos y sucursales) | P1 | Hecho | /server, /client | SD-003, SD-001 |
@@ -39,7 +42,7 @@ Fuente de verdad del backlog. Mantenido por `product-owner`.
 ## Deseables / ideas
 
 | ID | Título | Prioridad | Estado | Capas | Depende de |
-|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | SD-014 | Inicio/Dashboard con métricas reales | P2 | Idea | /server, /client | SD-006, SD-009 |
 | SD-015 | Impresión/exportación de factura (tique) | P2 | Idea | /client | SD-006 |
 | SD-016 | Reportes de ventas por rango/sucursal | P3 | Idea | /server, /client | SD-009 |
@@ -141,3 +144,109 @@ Fuente de verdad del backlog. Mantenido por `product-owner`.
   - **Spec:** `specs/listado-facturas-001/` (spec/plan/tasks).
 - **Pendiente para cerrar:** ejecutar QA (T-005) con `npm test` (raíz) + `lint`/`build`; **no existe** un `tests/api/listado-facturas.test.js` en el repo. Solo entonces pasa a `Hecho`.
 - **Riesgo:** código sin verificación independiente; no marcar como `Hecho` hasta que `qa` apruebe.
+
+### SD-020 - UX del dashboard: controlar extensión vertical de cards/gráficos
+- **Origen:** reporte de usuario (2026-10-06): "las cards se van hasta el fondo" en la página de Inicio; el layout actual se estira verticalmente cuando hay muchos datos.
+- **Objetivo/valor:** mantener el dashboard usable en desktop con muchos productos/sucursales, sin scroll excesivo ni cards deformadas, preservando el lenguaje visual "papel de caja".
+- **Decisión de producto:** las cards afectadas son **Top productos** y **Ventas por sucursal** (ambas usan `GraficoBarras`). Se les aplicará una **altura máxima fija con scroll interno vertical**; cada barra conserva su altura mínima legible. Se añade un contador "Mostrando N de M" en el encabezado de cada card.
+- **Alcance dentro:**
+  - Modificar `Inicio.jsx` para envolver las dos cards de `GraficoBarras` en un contenedor con `max-h` y `overflow-y-auto`.
+  - Ajustar `GraficoBarras` (o su envoltura) para que la lista de barras no desborde la card.
+  - Agregar contador de elementos visibles/total en el título de cada card (usa `formatearNumero`).
+  - Asegurar accesibilidad: scroll por teclado, foco visible, `aria-label` descriptivo.
+  - Mantener el diseño "papel de caja": bordes, sombras, tipografía, colores existentes.
+- **Alcance fuera:** cambiar el contrato de API del tablero (`useTablero`/`GET /api/v1/tablero`); agregar nuevas métricas; modificar el esquema de BD; paginación de API.
+- **Capas afectadas:** `/client`.
+- **Dependencias:** SD-014 (dashboard con métricas reales; funcionalidad ya presente en `Inicio.jsx`).
+- **Criterios de aceptación:**
+  1. En desktop, ambas cards (`Top productos` y `Ventas por sucursal`) no exceden una altura máxima acordada (ej. 320–360 px) aunque haya 50+ items.
+  2. Si el contenido excede la altura máxima, aparece scroll vertical interno suave; no se deforman las barras ni el texto.
+  3. El contador "Mostrando N de M" refleja el total real de items devueltos por el API.
+  4. No hay regresión: los datos se siguen cargando desde `useTablero`, los formatos de moneda/cantidad usan `formatearMoneda`/`formatearNumero`, y el layout responsive sigue funcionando.
+  5. `npm run lint --prefix client` y `npm run build --prefix client` pasan sin errores.
+- **Estado:** Hecho (QA APROBADO, 2026-10-06). Implementado en `client/src/paginas/Inicio.jsx` con componente interno `CardBarras`: altura máxima `max-h-64`/`max-h-80`, scroll interno, contador "Mostrando N de M" y accesibilidad (`tabIndex`, `role="region"`, `aria-label`). Lint y build del frontend en verde. Riesgo no bloqueante: QA no pudo validar visualmente con datos extensos porque el navegador no alcanzó el dev server local.
+
+### SD-010 - Onboarding superadmin: empresas y administradores
+- **Origen:** el usuario necesita que el rol `superadmin` pueda crear empresas y administradores desde la aplicación (no solo por script SQL).
+- **Objetivo/valor:** permitir que el operador de plataforma (superadmin) provisione nuevas PYMES y sus administradores iniciales sin tocar la base de datos a mano. Es el paso previo al login multi-tenant (SD-013) y al MVP operativo.
+- **Alcance confirmado (mínimo viable):**
+  - **Backend:** endpoints bajo `/api/v1/admin/empresas` y `/api/v1/admin/usuarios` protegidos para rol `superadmin`:
+    - `POST /api/v1/admin/empresas` — crear empresa.
+    - `GET /api/v1/admin/empresas` — listar empresas (paginado, con filtro por activo).
+    - `GET /api/v1/admin/empresas/:id` — ver empresa y sus admins.
+    - `PATCH /api/v1/admin/empresas/:id` — editar datos y activar/desactivar.
+    - `POST /api/v1/admin/usuarios` — crear administrador asignado a una empresa.
+    - `GET /api/v1/admin/usuarios` — listar administradores (paginado, filtro por empresa).
+    - `GET /api/v1/admin/usuarios/:id` — ver administrador.
+    - `PATCH /api/v1/admin/usuarios/:id` — editar nombre/correo y activar/desactivar.
+  - **Frontend:** sección "Administración" visible solo para `superadmin` con:
+    - Pantalla de empresas (tabla paginada, crear, ver, editar, activar/desactivar).
+    - Pantalla de administradores (tabla paginada, crear, ver, editar, activar/desactivar).
+    - **Formulario de creación de empresa obligatoriamente incluye el primer administrador** (mismo paso).
+  - **Reglas de negocio confirmadas:**
+    - Solo `superadmin` puede acceder; otros roles → 403.
+    - El correo del administrador debe ser único dentro de la empresa (`UNIQUE (empresa_id, correo)`).
+    - Al desactivar una empresa, sus usuarios administradores quedan inactivos (o el login les niega el acceso).
+    - **El superadmin NO crea sucursales; el administrador de la empresa crea su primera sucursal después de loguearse.**
+  - **Contraseña del administrador creado:** fija `123` para ambiente de desarrollo/demo; se muestra una vez en la UI tras crear el administrador. **Advertencia de seguridad:** esta contraseña es deliberadamente débil y solo está permitida para facilitar pruebas locales/demos; en producción se debe reemplazar por contraseña aleatoria o flujo de cambio obligatorio en primer login.
+- **Alcance fuera (propuesto para otros ítems):**
+  - Envío real de correos electrónicos (invitación/recuperación).
+  - Límites de usuarios por plan/tarifa.
+  - Edición de permisos granulares.
+  - Login multi-tenant (SD-013).
+- **Capas afectadas:** `/server`, `/client`, `BD` (solo si se necesitan ajustes menores; el schema.sql ya soporta empresa/usuario/superadmin).
+- **Dependencias:** auth vertical (Hecho), middleware `autorizacion` por rol.
+- **Criterios de aceptación:**
+  1. Un `superadmin` autenticado puede crear una empresa y un administrador inicial desde la UI.
+  2. El nuevo administrador puede loguearse con las credenciales entregadas y acceder a su empresa.
+  3. Listados paginados de empresas y administradores con filtros básicos.
+  4. Validaciones: empresa sin nombre → 400; admin sin correo válido → 400; correo duplicado en la misma empresa → 409; acceso no superadmin → 403.
+  5. `npm test` (raíz), lint y build en verde.
+- **Estado:** Hecho (QA omitido por decisión del usuario: 2026-10-06).
+- **Spec propuesta:** `specs/onboarding-superadmin-001/`.
+
+### SD-021 - Moneda por empresa: formato y símbolo según empresa.moneda
+- **Origen:** reporte de usuario (2026-10-06): al crear una empresa con moneda USD, el sistema sigue mostrando COP en productos, facturación y dashboard. `client/src/utilidades/formatoMoneda.js` tiene `MONEDA = 'COP'` quemado y el login/perfil no incluye la moneda de la empresa.
+- **Objetivo/valor:** que toda la UI muestre la moneda configurada en `empresa.moneda` (COP, USD, etc.) en lugar de forzar COP.
+- **Decisiones de producto confirmadas:**
+  1. **Formato:** `formatearMoneda(valor, moneda)`. Si `moneda === 'COP'`, sin decimales; cualquier otra moneda, 2 decimales.
+  2. **Moneda editable:** el superadmin puede cambiar `moneda` de una empresa existente vía `PATCH /api/v1/admin/empresas/:id`.
+  3. **Aplicación:** cambio visual inmediato en toda la UI (histórico y futuro); no se alteran valores guardados.
+- **Alcance dentro:**
+  - **Backend:** incluir `moneda` en `POST /api/v1/auth/login` y `GET /api/v1/auth/perfil` haciendo JOIN con `empresa`. Asegurar que `PATCH /api/v1/admin/empresas/:id` permita editar `moneda`.
+  - **Frontend:** modificar `formatearMoneda` para recibir moneda y decimales condicionales. Actualizar todos los llamados en productos, POS, facturación, dashboard, inventario y recibo para pasar `usuario.empresa?.moneda`.
+  - Mantener `formatearNumero` sin cambios.
+- **Alcance fuera:** conversión de monedas (tasas de cambio); precios en múltiples monedas; cambio de moneda retroactivo en facturas antiguas.
+- **Capas afectadas:** `/server`, `/client`.
+- **Dependencias:** auth (Hecho); SD-010 (onboarding) para que el superadmin pueda configurar la moneda al crear/editar la empresa.
+- **Criterios de aceptación:**
+  1. Login y perfil devuelven la moneda de la empresa del usuario.
+  2. `formatearMoneda` acepta un segundo parámetro `moneda` y usa `Intl.NumberFormat` con ese código y decimales condicionales.
+  3. Todas las pantallas que muestran dinero (productos, POS, facturación, dashboard, inventario, recibo) usan la moneda de la empresa.
+  4. Si no hay moneda disponible, default a COP (comportamiento actual).
+  5. `PATCH /api/v1/admin/empresas/:id` acepta `moneda` como campo editable.
+  6. `npm run lint --prefix client`, `npm run build --prefix client` y `npm test` pasan sin errores.
+- **Estado:** Hecho (QA omitido por decisión del usuario: 2026-10-06).
+- **Spec propuesta:** `specs/moneda-empresa-001/`.
+
+(End of file - total 234 lines)
+
+
+**Nota sobre QA:** El usuario decidió omitir QA para SD-010 y SD-021.
+### SD-022 - Bugfix: etiqueta de moneda en formulario de productos
+- **Origen:** reporte de usuario (2026-10-06): en client/src/componentes/FormularioProducto.jsx la ayuda del campo "Precio unitario" dice "En pesos colombianos (COP)." quemado, sin importar la moneda de la empresa.
+- **Objetivo/valor:** que la ayuda del precio unitario refleje la moneda configurada en empresa.moneda.
+- **Alcance dentro:**
+  - Modificar FormularioProducto.jsx para obtener usuario.empresa?.moneda vía useAutenticacion.
+  - Cambiar la ayuda a algo como En . o Precio en .
+  - Si no hay moneda, default a COP.
+- **Alcance fuera:** cambiar lógica de precios, backend, schema.
+- **Capas afectadas:** /client.
+- **Dependencias:** SD-021 (moneda por empresa).
+- **Criterios de aceptación:**
+  1. La ayuda del campo precio unitario muestra la moneda de la empresa.
+  2. 
+pm run lint --prefix client y 
+pm run build --prefix client pasan.
+- **Estado:** Hecho (verificado con lint/build, 2026-10-06).
+- **Spec propuesta:** specs/bugfix-etiqueta-moneda-producto-001/.

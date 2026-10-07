@@ -1,9 +1,10 @@
 import Alerta from './Alerta'
 import Boton from './Boton'
 import SelectorCliente from './SelectorCliente'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { formatearMoneda } from '../utilidades/formatoMoneda'
 
-const FilaTotal = ({ etiqueta, valor, negativo = false, fuerte = false }) => (
+const FilaTotal = ({ etiqueta, valor, moneda, negativo = false, fuerte = false }) => (
   <div className="flex items-baseline justify-between gap-3">
     <dt className={fuerte ? 'text-sm font-medium text-tinta' : 'text-sm text-tinta-suave'}>
       {etiqueta}
@@ -16,7 +17,7 @@ const FilaTotal = ({ etiqueta, valor, negativo = false, fuerte = false }) => (
       }`}
     >
       {negativo && valor > 0 ? '−' : ''}
-      {formatearMoneda(valor)}
+      {formatearMoneda(valor, moneda)}
     </dd>
   </div>
 )
@@ -41,6 +42,9 @@ const ResumenVenta = ({
   alEnviar,
   puedeEnviar = false,
 }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
+
   const manejarEnvio = (evento) => {
     evento.preventDefault()
     if (!puedeEnviar || enviando) return
@@ -199,15 +203,16 @@ const ResumenVenta = ({
       </div>
 
       <dl className="space-y-2.5 px-4 py-4">
-        <FilaTotal etiqueta="Subtotal" valor={totales.subtotal} />
+        <FilaTotal etiqueta="Subtotal" valor={totales.subtotal} moneda={moneda} />
         <FilaTotal
           etiqueta="Descuento"
           valor={totales.descuento}
+          moneda={moneda}
           negativo
         />
-        <FilaTotal etiqueta="Impuesto" valor={totales.impuesto} />
+        <FilaTotal etiqueta="Impuesto" valor={totales.impuesto} moneda={moneda} />
         <div className="border-t border-borde pt-2.5">
-          <FilaTotal etiqueta="Total" valor={totales.total} fuerte />
+          <FilaTotal etiqueta="Total" valor={totales.total} moneda={moneda} fuerte />
         </div>
       </dl>
 

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import ArmazonPanel from './componentes/ArmazonPanel'
 import { useAutenticacion } from './hooks/useAutenticacion'
+import AdminEmpresas from './paginas/AdminEmpresas'
+import AdminUsuarios from './paginas/AdminUsuarios'
 import Categorias from './paginas/Categorias'
 import Clientes from './paginas/Clientes'
 import Facturacion from './paginas/Facturacion'
@@ -20,6 +22,8 @@ const VISTAS = {
   'punto-de-venta': PuntoDeVenta,
   inventario: Inventario,
   facturacion: Facturacion,
+  'admin-empresas': AdminEmpresas,
+  'admin-usuarios': AdminUsuarios,
 }
 
 const PanelAutenticado = () => {

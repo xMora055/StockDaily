@@ -1,4 +1,4 @@
-# MEMORY.md — StockDaily
+﻿# MEMORY.md — StockDaily
 
 Memoria activa del proyecto. Mantener conciso (máximo ~50 líneas).
 
@@ -30,8 +30,12 @@ Memoria activa del proyecto. Mantener conciso (máximo ~50 líneas).
 - [x] SD-019 Selector de tamaño de página: opciones **5/10/15/20** (sin 0) en `Paginacion`, en las 4 tablas; default `por_pagina` **10** (API y cliente). QA APROBADO (**272/272** tests). Ver `specs/paginacion-listados-002/`.
 - [x] SD-007 Anulación de factura: `PATCH /api/v1/facturas/:id/anular` transaccional (reversión de stock con `movimiento_inventario` `anulacion`, `FOR UPDATE`, auditoría `anulada_en`/`anulada_por`) + botón "Anular venta" en `ReciboEmitido`. QA APROBADO (`tests/api/anulacion-factura.test.js`, 27 casos; suite raíz 272/272). Ver `specs/anulacion-factura-001/`.
 - [~] SD-009 Listado y consulta de facturas (P1): **código completo** (backend `GET /facturas` y `GET /facturas/:id`; UI `Facturacion` + sección "Facturación" activa en el panel), **pendiente QA (T-005)**. No existe `tests/api/listado-facturas.test.js`; no marcar `Hecho` sin aprobación de `qa`.
+- [x] SD-020 UX del dashboard (P1): cards Top productos y Ventas por sucursal con altura máxima fija (max-h-64/max-h-80), scroll interno y contador "Mostrando N de M". QA APROBADO (lint/build verdes). Ver specs/mejora-ux-dashboard-001/.
+- [x] SD-010 Onboarding superadmin (P1): implementado en /server y /client; contraseña fija `123` para dev/demo. **Hecho** (QA omitido por decisión del usuario).
+- [~] SD-021 Moneda por empresa (P1): usuario reporta que empresa.moneda = 'USD' sigue mostrando COP en productos/facturación/dashboard. formatearMoneda tiene COP quemado; login/perfil no exponen moneda. En discusión.
 - [x] Rediseño visual "papel de caja" de Login, Inicio y primitivos — ver **Diseño Visual**.
-- [ ] Inicialización del repositorio Git.
+- [x] SD-022 Bugfix etiqueta moneda en producto (P1): ayuda de precio unitario ahora usa `usuario.empresa?.moneda`. Lint/build verdes.
+- [~] Inicialización del repositorio Git pendiente; README.md creado por solicitud del usuario.
 
 ## Decisiones Técnicas (y Justificación)
 
@@ -55,7 +59,7 @@ Dirección **"papel de caja"**: interfaz impresa (mostrador/tique/libro de caja)
 - **Paleta (`client/src/index.css` `@theme`):** papel hueso frío (`fondo`), tinta petróleo-negro, `petroleo`, `marca` teal, **acento ámbar** usado con restricción (checks, punto del logo), `exito` verde libro, `error` ladrillo, `aviso`. Sombras `shadow-impresa` (sólidas, sin blur gris) y utilidades `seam-y`/`seam-x`/`grano`.
 - **Reglas:** jerarquía por hairlines y tipografía, no tarjetas idénticas; sin gradientes genéricos; animación de entrada `aparecer`; respetar `prefers-reduced-motion`, foco visible y contraste AA; targets de 44px.
 - **Chrome del panel:** riel lateral en desktop / barra superior en móvil. Secciones **activas**: Inicio, Productos, Sucursales, Punto de venta, Inventario y **Facturación** (SD-009, pendiente QA). Ya no queda ningún item "Pronto".
-- **Formato de cifras (COP):** todo el dinero con `formatearMoneda` y toda cantidad/contador visible con `formatearNumero`, ambos de `client/src/utilidades/formatoMoneda.js` (es-CO: miles con punto, sin decimales, `—` si no es numérico). Nunca formatear a mano, ni dentro de inputs de edición, ni en porcentajes decimales o IDs.
+- **Formato de cifras (COP):** todo el dinero con `fformatearMoneda` y toda cantidad/contador visible con `formatearNumero`, ambos de `client/src/utilidades/formatoMoneda.js` (es-CO: miles con punto, sin decimales, `—` si no es numérico). Nunca formatear a mano, ni dentro de inputs de edición, ni en porcentajes decimales o IDs.
 
 ## Aprendizajes & Errores a Evitar
 
@@ -65,7 +69,8 @@ Dirección **"papel de caja"**: interfaz impresa (mostrador/tique/libro de caja)
 - **Correo inactivo:** devuelve **403** y revela que el correo existe; el **401** de credenciales sí es genérico.
 - **Permisos de agentes (Windows):** `permission.edit` compara la ruta del archivo; aquí el workspace root es `/` y las rutas llegan absolutas (`C:\...`), por lo que patrones tipo `docs/**`/`server/**` **no** matchean. Usar prefijo `*` y cubrir ambos separadores: `*server/*` y `*server\*` (idem `client`, `tests`, `specs`, `docs`); `*` ya cubre el resto. Los `deny`/`ask` específicos (`.env`, `schema.sql`) van **después** del allow (last-match-wins). Verificar tras reiniciar opencode (la config no se recarga en caliente).
 - **Runner de tests:** `node --test` corre desde la raíz y descubre `tests/**/*.test.js`; `npm test` en `server` no encuentra tests y sale 0 (los tests viven en la raíz).
+- **Anti-rumiado de subagentes:** `backend`, `frontend` y `qa` tienen sección "Definición de terminado (parar aquí)": alcance exacto, verificación UNA pasada (máx. 2 ciclos si hay fallo real que corregir), prohibido auto-revisarse, cierre = reportar y detenerse. `planeador` no re-verifica lo que `qa` aprobó (regla 9 "Delegación acotada").
 
 ## Próximos Pasos
 
-Backlog priorizado en `docs/backlog.md` (fuente de verdad). **HECHOS: SD-001, SD-003, SD-005, SD-006, SD-007, SD-011, SD-012, SD-018 y SD-019.** **Siguiente inmediato: cerrar SD-009** (código ya escrito) ejecutando el QA T-005 → si aprueba, pasa a `Hecho`. Después, P0 pendientes: **SD-004 Clientes** (cierra el ciclo del POS con cliente real) y **SD-002 Categorías**. Luego P1: SD-010 onboarding superadmin → SD-013 login multi-tenant, SD-008 métodos de pago y SD-017 endurecimiento. Git se omite por decisión del usuario.
+Backlog priorizado en `docs/backlog.md` (fuente de verdad). **HECHOS: SD-001, SD-003, SD-005, SD-006, SD-007, SD-010, SD-011, SD-012, SD-018, SD-019, SD-020, SD-021 y SD-022.** **Foco actual: retomar SD-009** (listado de facturas, código completo, pendiente QA T-005). Después, P0: **SD-004 Clientes** y **SD-002 Categorías**. Luego P1: SD-013 login multi-tenant, SD-008 métodos de pago y SD-017 endurecimiento. Git se omite por decisión del usuario.

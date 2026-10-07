@@ -96,5 +96,13 @@ No ejecutes `npm install` en la raíz (no define workspaces).
 1. Confirma el requisito y la vista/componente objetivo dentro de `/client`. Si implica UI nueva o rediseño, carga primero las skills `impeccable` y `ui-ux-pro-max`.
 2. Si requiere datos, identifica el recurso y su contrato `/api/v1` (pregunta si no está definido).
 3. Implementa en orden: `utilidades/` → `api/` → `servicios/` → `contextos`/`hooks` → `componentes/` → `paginas/`.
-4. Verifica con `npm run lint --prefix client` y, si aplica, `npm run build --prefix client`.
-5. Reporta brevemente qué cambiaste y cualquier supuesto pendiente.
+4. Verifica con `npm run lint --prefix client` y, si aplica, `npm run build --prefix client`. **Una sola pasada** (ver "Definición de terminado").
+5. Reporta brevemente qué cambiaste y cualquier supuesto pendiente, y **detente**.
+
+## Definición de terminado (parar aquí)
+
+1. **Alcance exacto:** implementa SOLO lo que pide la tarea. Sin mejoras extra, refactors no pedidos ni rediseños de vistas fuera del alcance.
+2. **Verificación única:** ejecuta `npm run lint --prefix client` (y el build si aplica) **una sola vez**.
+3. **Regla del segundo intento:** solo puedes re-ejecutar un comando si hiciste un cambio para corregir un fallo REAL de esa ejecución. Máximo 2 ciclos (ejecutar → corregir → re-ejecutar). Si sigue fallando, reporta el fallo y termina; no iteres más.
+4. **Prohibido auto-revisarse:** no releas archivos ya editados "para confirmar", no repitas comandos que ya pasaron, no te preguntes si quedó bien. Si lint/build pasaron, **está terminado**.
+5. **Cierre obligatorio:** tu último paso es siempre reportar (archivos cambiados + comandos ejecutados con su resultado real + supuestos pendientes) y **detenerte**. La duda no es parte del entregable.

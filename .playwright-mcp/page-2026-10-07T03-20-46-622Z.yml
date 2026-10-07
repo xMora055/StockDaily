@@ -1,0 +1,36 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e6]: StockDaily
+    - generic [ref=e13]:
+      - heading "La caja cuadra sola." [level=2] [ref=e14]
+      - paragraph [ref=e15]: Factura, descuenta el stock y mira cómo va el día sin salir del mostrador.
+      - list [ref=e16]:
+        - listitem [ref=e17]:
+          - generic [ref=e20]: Cobra y emite la factura desde el mismo mostrador.
+        - listitem [ref=e21]:
+          - generic [ref=e24]: El inventario se descuenta con cada venta.
+        - listitem [ref=e25]:
+          - generic [ref=e28]: Cierra la caja sin cuadrar planillas aparte.
+    - paragraph [ref=e30]: Verificando el servidor
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - generic [ref=e35]: Acceso
+      - generic [ref=e36]: 06 de oct de 2026
+    - heading "Inicia sesión" [level=1] [ref=e37]
+    - paragraph [ref=e38]: Entra con el correo de tu empresa.
+    - generic [ref=e39]:
+      - generic [ref=e40]:
+        - generic [ref=e41]:
+          - text: Correo
+          - generic [aria-hidden] [ref=e42]: "*"
+        - textbox "Correo" [ref=e44]
+      - generic [ref=e45]:
+        - generic [ref=e46]:
+          - text: Contraseña
+          - generic [aria-hidden] [ref=e47]: "*"
+        - textbox "Contraseña" [ref=e49]
+      - generic [ref=e50] [cursor=pointer]:
+        - checkbox "Recordar sesión en este equipo" [checked] [ref=e51]
+        - text: Recordar sesión en este equipo
+      - button "Entrar" [ref=e52]
+    - paragraph [ref=e53]: ¿No puedes entrar? Pídele a un administrador que revise tu acceso.

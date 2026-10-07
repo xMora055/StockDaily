@@ -12,12 +12,13 @@ function aUsuarioPublico(usuario) {
         correo: usuario.correo,
         rol: usuario.rol,
         empresa_id: usuario.empresa_id,
+        empresa: usuario.empresa,
     };
 }
 
 // Regla de negocio del login. No conoce req/res.
 async function iniciarSesion({ correo, password }) {
-    const candidatos = await usuarios.buscarPorCorreo(correo);
+    const candidatos = await usuarios.buscarPorCorreoConEmpresa(correo);
     const activos = candidatos.filter((usuario) => usuario.activo);
 
     // El correo es único por empresa, así que puede existir en varias.
@@ -62,7 +63,7 @@ async function iniciarSesion({ correo, password }) {
 
 // Datos frescos del usuario autenticado; 401 si ya no existe o está inactivo.
 async function obtenerPerfil(usuarioId) {
-    const usuario = await usuarios.buscarPorId(usuarioId);
+    const usuario = await usuarios.buscarPorIdConEmpresa(usuarioId);
     if (!usuario || !usuario.activo) {
         throw new ErrorApp(401, 'Tu sesión ya no es válida');
     }

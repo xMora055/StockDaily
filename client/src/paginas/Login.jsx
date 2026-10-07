@@ -115,10 +115,10 @@ const Login = () => {
         </div>
 
         <div className="relative mt-10 lg:mt-0">
-          <h2 className="max-w-md font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+          <h2 className="max-w-md text-balance font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
             La caja cuadra sola.
           </h2>
-          <p className="mt-5 max-w-sm text-base leading-relaxed text-white/75">
+          <p className="mt-5 max-w-sm text-base leading-relaxed text-white/85">
             Factura, descuenta el stock y mira cómo va el día sin salir del
             mostrador.
           </p>
@@ -127,7 +127,7 @@ const Login = () => {
             {beneficios.map((texto) => (
               <li
                 key={texto}
-                className="flex items-start gap-3 text-sm text-white/85"
+                className="flex items-start gap-3 text-sm text-white/90"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -152,22 +152,28 @@ const Login = () => {
         </div>
       </section>
 
-      <section className="flex items-center justify-center px-6 py-12 sm:px-8 lg:px-16">
+      <section className="flex items-start justify-center px-6 py-12 sm:px-8 lg:px-16 lg:pt-20">
         <div className="anim-aparecer w-full max-w-md">
           <div className="flex items-center justify-between border-b border-borde pb-3 font-mono text-xs text-tinta-suave">
-            <span>Acceso al panel</span>
+            <span>Acceso</span>
             <span>{fechaDeHoy()}</span>
           </div>
 
-          <h1 className="mt-8 font-display text-3xl font-semibold tracking-tight">
+          <h1 className="mt-8 text-balance font-display text-4xl font-semibold tracking-tight">
             Inicia sesión
           </h1>
           <p className="mt-2 text-base text-tinta-suave">
             Entra con el correo de tu empresa.
           </p>
 
+          {errorEnvio && (
+            <div className="mt-6">
+              <Alerta variante="error">{errorEnvio}</Alerta>
+            </div>
+          )}
+
           <form
-            className="mt-8 flex flex-col gap-5"
+            className="mt-6 flex flex-col gap-5"
             onSubmit={manejarEnvio}
             noValidate
           >
@@ -214,8 +220,6 @@ const Login = () => {
               />
               Recordar sesión en este equipo
             </label>
-
-            {errorEnvio && <Alerta variante="error">{errorEnvio}</Alerta>}
 
             <Boton tipo="submit" cargando={enviando} className="w-full">
               {enviando ? 'Entrando…' : 'Entrar'}

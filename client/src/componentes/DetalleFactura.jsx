@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Alerta from './Alerta'
 import Boton from './Boton'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { useFacturaDetalle } from '../hooks/useFacturaDetalle'
 import { anularFactura } from '../servicios/facturas'
 import { formatearMoneda, formatearNumero } from '../utilidades/formatoMoneda'
@@ -30,6 +31,8 @@ const Dato = ({ etiqueta, children }) => (
 )
 
 const DetalleFactura = ({ facturaId, alCerrar, alAnular }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const { factura, cargando, error, recargar, actualizarFactura } =
     useFacturaDetalle(facturaId)
   const refDialogo = useRef(null)
@@ -224,13 +227,13 @@ const DetalleFactura = ({ facturaId, alCerrar, alAnular }) => {
                       {formatearNumero(linea.cantidad)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right font-mono tabular-nums text-tinta-suave">
-                      {formatearMoneda(linea.precio_unitario)}
+                      {formatearMoneda(linea.precio_unitario, moneda)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right font-mono tabular-nums text-tinta-suave">
-                      {formatearMoneda(linea.subtotal)}
+                      {formatearMoneda(linea.subtotal, moneda)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right font-mono tabular-nums text-tinta">
-                      {formatearMoneda(linea.total)}
+                      {formatearMoneda(linea.total, moneda)}
                     </td>
                   </tr>
                 ))}
@@ -254,12 +257,12 @@ const DetalleFactura = ({ facturaId, alCerrar, alAnular }) => {
                     </p>
                   </div>
                   <span className="shrink-0 font-mono tabular-nums text-tinta">
-                    {formatearMoneda(linea.total)}
+                    {formatearMoneda(linea.total, moneda)}
                   </span>
                 </div>
                 <p className="mt-2 font-mono text-xs text-tinta-suave">
                   {formatearNumero(linea.cantidad)} ×{' '}
-                  {formatearMoneda(linea.precio_unitario)}
+                  {formatearMoneda(linea.precio_unitario, moneda)}
                 </p>
               </li>
             ))}
@@ -282,7 +285,7 @@ const DetalleFactura = ({ facturaId, alCerrar, alAnular }) => {
               >
                 <dt className="text-sm text-tinta-suave">{etiqueta}</dt>
                 <dd className="font-mono tabular-nums text-sm text-tinta">
-                  {formatearMoneda(valor)}
+                  {formatearMoneda(valor, moneda)}
                 </dd>
               </div>
             ))}
@@ -291,7 +294,7 @@ const DetalleFactura = ({ facturaId, alCerrar, alAnular }) => {
                 Total
               </dt>
               <dd className="font-mono text-lg font-semibold tabular-nums text-tinta">
-                {formatearMoneda(factura.total)}
+                {formatearMoneda(factura.total, moneda)}
               </dd>
             </div>
           </dl>

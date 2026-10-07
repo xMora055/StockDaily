@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import Alerta from './Alerta'
 import Boton from './Boton'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { formatearMoneda, formatearNumero } from '../utilidades/formatoMoneda'
 
 const MENSAJE_CATALOGO =
@@ -20,6 +21,8 @@ const BuscadorProductos = ({
   alAgregar,
   alReintentar,
 }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const [consulta, setConsulta] = useState('')
 
   const termino = normalizar(consulta.trim())
@@ -101,7 +104,7 @@ const BuscadorProductos = ({
               </span>
               <span className="flex shrink-0 items-center gap-3">
                 <span className="font-mono text-sm tabular-nums text-tinta">
-                  {formatearMoneda(producto.precio_unitario)}
+                  {formatearMoneda(producto.precio_unitario, moneda)}
                 </span>
                 <span
                   className="grid h-8 w-8 place-items-center rounded border border-borde-fuerte text-tinta-suave"

@@ -3,6 +3,7 @@ import Alerta from './Alerta'
 import Boton from './Boton'
 import CampoArea from './CampoArea'
 import CampoEntrada from './CampoEntrada'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { obtenerCategoria } from '../servicios/categorias'
 
 const estadoInicial = (producto) => ({
@@ -71,6 +72,8 @@ const FormularioProducto = ({
   const [tocado, setTocado] = useState({})
   const [intento, setIntento] = useState(false)
   const [categoriaResuelta, setCategoriaResuelta] = useState(null)
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
 
   const idCategoriaActual =
     producto?.categoria_id !== undefined && producto?.categoria_id !== null
@@ -235,7 +238,7 @@ const FormularioProducto = ({
             alCambiar={actualizar('precio_unitario')}
             alSalir={marcarTocado('precio_unitario')}
             error={mostrarError('precio')}
-            ayuda="En pesos colombianos (COP)."
+            ayuda={`Precio en ${moneda}.`}
             enviando={guardando}
             requerido
           />

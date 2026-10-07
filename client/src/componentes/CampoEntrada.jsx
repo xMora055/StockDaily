@@ -48,7 +48,7 @@ const CampoEntrada = ({
           disabled={enviando}
           aria-invalid={error ? true : undefined}
           aria-describedby={descrito}
-          className={`h-11 w-full rounded-md border bg-superficie px-3 pr-10 text-base text-tinta shadow-[inset_0_1px_0_0_rgba(0,0,0,0.03)] transition-colors duration-150 placeholder:text-tinta-suave/70 disabled:opacity-60 ${claseBorde}`}
+          className={`h-11 w-full rounded-md border bg-superficie px-3 pr-10 text-base text-tinta shadow-[inset_0_1px_0_0_rgba(0,0,0,0.03)] transition-colors duration-150 placeholder:text-tinta/55 disabled:opacity-60 ${claseBorde}`}
         />
 
         <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center">

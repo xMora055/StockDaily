@@ -108,11 +108,13 @@ T-###:
 
 5. **Multi-tenant y seguridad (verificar, no implementar):** el `empresa_id`/`sucursal_id` siempre se derivan del token en el backend, nunca del body/query. Roles: `administrador` (con empresa) y `superadmin` (sin empresa). El token viaja como `Authorization: Bearer <token>`. Ningún subagente debe escribir secretos ni leer/modificar `.env`; nada de secretos en claves `VITE_`.
 
-6. **Verificación integrada:** no des una tarea por terminada solo porque un subagente reportó. Confirma el contrato en el código (rutas y campos), ejecuta el healthcheck `GET /api/v1/salud` y, si aplica, arranca backend (`npm run dev --prefix server`) y lint/build del cliente (`npm run lint --prefix client`, `npm run build --prefix client`).
+6. **Verificación integrada:** no des una tarea por terminada solo porque un subagente reportó. Confirma el contrato en el código (rutas y campos), ejecuta el healthcheck `GET /api/v1/salud` y, si aplica, arranca backend (`npm run dev --prefix server`) y lint/build del cliente (`npm run lint --prefix client`, `npm run build --prefix client`). **Una sola pasada:** no repitas verificaciones que ya ejecutaste ni re-verifiques por tu cuenta lo que `qa` ya aprobó; su veredicto APROBADO es el cierre.
 
 7. **Cierre con QA (obligatorio):** al terminar `backend` y `frontend`, delega en `qa`. Si QA rechaza, re-delega las correcciones a `backend`/`frontend` y **vuelve a pasar por QA** antes de cerrar. La tarea solo se considera completa cuando QA aprueba (o el usuario acepta los pendientes explícitamente).
 
 8. **Idioma:** español para UI, mensajes, variables, funciones, tablas, specs y commits.
+
+9. **Delegación acotada (anti-rumiado):** en cada handoff exige al subagente verificar UNA sola vez (máximo 2 ciclos: ejecutar → corregir fallo real → re-ejecutar), reportar y **detenerse**. No pidas ni aceptes que "se asegure de que todo quedó bien" más allá de los `criterios_aceptacion` escritos; si la evidencia requerida pasó, la tarea está terminada.
 
 ## Comandos
 

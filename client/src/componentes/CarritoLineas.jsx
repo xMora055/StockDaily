@@ -1,3 +1,4 @@
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import {
   formatearMoneda,
   formatearNumero,
@@ -16,6 +17,8 @@ const CarritoLineas = ({
   alQuitar,
   alVaciar,
 }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const unidad = totales.unidades === 1 ? 'unidad' : 'unidades'
 
   return (
@@ -80,7 +83,7 @@ const CarritoLineas = ({
                   </p>
                   <p className="mt-0.5 truncate font-mono text-xs text-tinta-suave">
                     {linea.codigo || 'Sin código'} ·{' '}
-                    {formatearMoneda(linea.precio_unitario)} c/u
+                    {formatearMoneda(linea.precio_unitario, moneda)} c/u
                   </p>
                 </div>
                 <button
@@ -165,7 +168,7 @@ const CarritoLineas = ({
                     Importe
                   </p>
                   <p className="font-mono text-sm font-medium tabular-nums text-tinta">
-                    {formatearMoneda(linea.total)}
+                    {formatearMoneda(linea.total, moneda)}
                   </p>
                 </div>
               </div>

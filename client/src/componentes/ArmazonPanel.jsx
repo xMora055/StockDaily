@@ -2,7 +2,7 @@ import Boton from './Boton'
 import Marca from './Marca'
 import { useAutenticacion } from '../hooks/useAutenticacion'
 
-const SECCIONES = [
+const SECCIONES_OPERATIVAS = [
   { id: 'inicio', nombre: 'Inicio' },
   { id: 'productos', nombre: 'Productos' },
   { id: 'categorias', nombre: 'Categorías' },
@@ -13,10 +13,16 @@ const SECCIONES = [
   { id: 'facturacion', nombre: 'Facturación' },
 ]
 
+const SECCIONES_ADMIN = [
+  { id: 'admin-empresas', nombre: 'Empresas' },
+  { id: 'admin-usuarios', nombre: 'Administradores' },
+]
+
 const ArmazonPanel = ({ seccionActiva, alNavegar, children }) => {
   const { usuario, cerrarSesion } = useAutenticacion()
 
   const inicial = usuario?.nombre?.charAt(0)?.toUpperCase() ?? '?'
+  const esSuperadmin = usuario?.rol === 'superadmin'
 
   const renderSeccion = (seccion) => {
     if (seccion.proximamente) {
@@ -52,6 +58,23 @@ const ArmazonPanel = ({ seccionActiva, alNavegar, children }) => {
     )
   }
 
+  const renderGrupoAdmin = () => {
+    if (!esSuperadmin) return null
+
+    return (
+      <div className="mt-6 flex flex-col gap-1">
+        <div className="mb-1 flex items-center gap-2 px-3">
+          <span className="h-px flex-1 bg-borde" aria-hidden="true" />
+          <span className="font-mono text-[10px] uppercase tracking-widest text-tinta-suave">
+            Administración
+          </span>
+          <span className="h-px flex-1 bg-borde" aria-hidden="true" />
+        </div>
+        {SECCIONES_ADMIN.map(renderSeccion)}
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-svh bg-fondo text-tinta">
       <header className="sticky top-0 z-20 border-b border-borde bg-superficie/90 backdrop-blur lg:hidden">
@@ -74,7 +97,8 @@ const ArmazonPanel = ({ seccionActiva, alNavegar, children }) => {
           aria-label="Secciones del panel"
           className="flex gap-1 overflow-x-auto border-t border-borde px-3 py-2"
         >
-          {SECCIONES.map(renderSeccion)}
+          {SECCIONES_OPERATIVAS.map(renderSeccion)}
+          {esSuperadmin && SECCIONES_ADMIN.map(renderSeccion)}
         </nav>
       </header>
 
@@ -94,7 +118,8 @@ const ArmazonPanel = ({ seccionActiva, alNavegar, children }) => {
             aria-label="Secciones del panel"
             className="mt-9 flex flex-col gap-0.5"
           >
-            {SECCIONES.map(renderSeccion)}
+            {SECCIONES_OPERATIVAS.map(renderSeccion)}
+            {renderGrupoAdmin()}
           </nav>
 
           <div className="mt-auto border-t border-borde pt-5">

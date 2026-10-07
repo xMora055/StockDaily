@@ -22,6 +22,10 @@ const iniciarSesionSimulada = async ({ correo }) => {
       correo,
       rol: 'administrador',
       empresa_id: 1,
+      empresa: {
+        id: 1,
+        moneda: 'COP',
+      },
     },
   }
 }
@@ -43,6 +47,10 @@ export const obtenerPerfil = async () => {
         correo: 'prueba@stockdaily.test',
         rol: 'administrador',
         empresa_id: 1,
+        empresa: {
+          id: 1,
+          moneda: 'COP',
+        },
       },
     }
   }

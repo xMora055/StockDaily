@@ -1,4 +1,5 @@
 import Paginacion from './Paginacion'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { formatearMoneda, formatearNumero } from '../utilidades/formatoMoneda'
 import { formatearFecha } from '../utilidades/formatoFecha'
 
@@ -24,6 +25,8 @@ const TablaFacturas = ({
   alCambiarPorPagina,
   alSeleccionar,
 }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const abrirDetalle = (factura) => alSeleccionar(factura)
 
   const manejarTecla = (evento, factura) => {
@@ -122,7 +125,7 @@ const TablaFacturas = ({
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 text-right font-mono tabular-nums text-tinta sm:px-4">
-                    {formatearMoneda(factura.total)}
+                    {formatearMoneda(factura.total, moneda)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3 sm:px-4">
                     {chipEstado(factura.estado)}
@@ -164,7 +167,7 @@ const TablaFacturas = ({
                 <div className="min-w-0 text-right">
                   <dt className="font-mono text-xs text-tinta-suave">Total</dt>
                   <dd className="mt-0.5 font-mono tabular-nums text-tinta">
-                    {formatearMoneda(factura.total)}
+                    {formatearMoneda(factura.total, moneda)}
                   </dd>
                 </div>
                 <div className="col-span-2 min-w-0">

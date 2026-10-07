@@ -1,19 +1,18 @@
-/* Formato de dinero centralizado. El backend opera en pesos colombianos (COP). */
+/* Formato de dinero centralizado. La moneda viene de usuario.empresa.moneda. */
 
 export const MONEDA = 'COP'
 
-/* COP no usa centavos: se muestra sin decimales, con separador de miles (punto). */
-const formateador = new Intl.NumberFormat('es-CO', {
-  style: 'currency',
-  currency: MONEDA,
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
-})
-
-export const formatearMoneda = (valor) => {
+/* Formato según moneda: COP sin decimales, otras con 2 decimales. */
+export const formatearMoneda = (valor, moneda = 'COP') => {
   const numero = Number(valor)
   if (!Number.isFinite(numero)) return '—'
-  return formateador.format(numero)
+  const opciones = {
+    style: 'currency',
+    currency: moneda,
+    minimumFractionDigits: moneda === 'COP' ? 0 : 2,
+    maximumFractionDigits: moneda === 'COP' ? 0 : 2,
+  }
+  return new Intl.NumberFormat('es-CO', opciones).format(numero)
 }
 
 /* Cantidades/contadores: enteros con separador de miles (punto) y sin decimales. */

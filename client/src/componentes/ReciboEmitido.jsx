@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import Alerta from './Alerta'
 import Boton from './Boton'
+import { useAutenticacion } from '../hooks/useAutenticacion'
 import { anularFactura } from '../servicios/facturas'
 import { formatearMoneda, formatearNumero } from '../utilidades/formatoMoneda'
 
 const ReciboEmitido = ({ factura, alCerrar, alAnular }) => {
+  const { usuario } = useAutenticacion()
+  const moneda = usuario?.empresa?.moneda || 'COP'
   const [confirmando, setConfirmando] = useState(false)
   const [anulando, setAnulando] = useState(false)
   const [error, setError] = useState('')
@@ -75,7 +78,7 @@ const ReciboEmitido = ({ factura, alCerrar, alAnular }) => {
         <div className="text-right">
           <p className="font-mono text-xs text-white/70">Total</p>
           <p className="font-mono text-2xl font-semibold tabular-nums sm:text-3xl">
-            {formatearMoneda(factura.total)}
+            {formatearMoneda(factura.total, moneda)}
           </p>
         </div>
       </div>
@@ -108,7 +111,7 @@ const ReciboEmitido = ({ factura, alCerrar, alAnular }) => {
           <div key={etiqueta} className="bg-petroleo px-4 py-3">
             <dt className="font-mono text-xs text-white/70">{etiqueta}</dt>
             <dd className="mt-1 font-mono text-sm tabular-nums">
-              {formatearMoneda(valor)}
+              {formatearMoneda(valor, moneda)}
             </dd>
           </div>
         ))}
