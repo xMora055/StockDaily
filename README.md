@@ -1,3 +1,7 @@
+#USUARIO DE PRUEBA
+CORREO: prueba@stockdaily.com
+PW: 123
+
 # StockDaily
 
 Sistema web full-stack de facturación, punto de venta y control de inventario en tiempo real para PYMES.
